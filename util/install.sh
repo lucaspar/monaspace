@@ -27,8 +27,14 @@ fi
 
 mkdir -p "${MONASPACE_LOCATON}"
 
+# Safety check: if MONASPACE_LOCATON is not set, empty, or points to root or home, exit
+if [ -z "${MONASPACE_LOCATON}" ] || [ "${MONASPACE_LOCATON}" == "/" ] || [ "${MONASPACE_LOCATON}" == "${HOME}" ]; then
+    echo "Invalid install location: '${MONASPACE_LOCATON}'."
+    exit 3
+fi
+
 # remove all fonts from ~/.local/share/fonts/Monaspace/ that start with "Monaspace"
-find "${MONASPACE_LOCATON}" -type f \( -name "*.ttf" -o -name "*.otf" \) -delete
+find "${MONASPACE_LOCATON}" -type f \( -name "Monaspace*.ttf" -o -name "Monaspace*.otf" \) -delete
 
 # copy all fonts from ./otf to ~/.local/share/fonts
 rsync -a "${REPO_LOCATION}/fonts/otf/"* "${MONASPACE_LOCATON}"
@@ -41,5 +47,5 @@ if [ "$(uname)" == "Linux" ]; then
     fc-cache -f
 fi
 
-NUM_FONTS=$(find "${MONASPACE_LOCATON}" -name "Monaspace*" | wc -l)
+NUM_FONTS=$(find "${MONASPACE_LOCATON}" \( -name "Monaspace*.ttf" -o -name "Monaspace*.otf" \) | wc -l)
 echo "${NUM_FONTS} fonts installed to '${MONASPACE_LOCATON}'."
