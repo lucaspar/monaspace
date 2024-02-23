@@ -28,7 +28,7 @@ fi
 mkdir -p "${MONASPACE_LOCATON}"
 
 # remove all fonts from ~/.local/share/fonts/Monaspace/ that start with "Monaspace"
-find "${MONASPACE_LOCATON}" -name "Monaspace*" -delete
+find "${MONASPACE_LOCATON}" -type f \( -name "*.ttf" -o -name "*.otf" \) -delete
 
 # copy all fonts from ./otf to ~/.local/share/fonts
 rsync -a "${REPO_LOCATION}/fonts/otf/"* "${MONASPACE_LOCATON}"
